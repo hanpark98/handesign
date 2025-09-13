@@ -1,0 +1,26 @@
+---
+import Base from '@/layouts/Base.astro';
+import LoopMantra from '@/components/LoopMantra.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import Grid from '@/components/Grid.astro';
+
+const projects = [
+  { href: '/projects/example', title: 'Example Case Study', year: '2025', thumb: '/og-default.jpg', tags: ['UI', 'Brand'] },
+  { href: '/projects/another', title: 'Another Project', year: '2024', thumb: '/og-default.jpg' },
+];
+---
+<Base title="Han Park — Designer">
+  <section class="pt-16 sm:pt-24">
+    <h1 class="h1 max-w-[18ch] font-extrabold tracking-tight">
+      Han Park <span class="p block font-normal">is a designer & creative technologist based in Seoul.</span>
+    </h1>
+  </section>
+
+  <LoopMantra />
+
+  <section class="py-10 sm:py-16">
+    <Grid>
+      {projects.map((p) => <ProjectCard {...p} />)}
+    </Grid>
+  </section>
+</Base>

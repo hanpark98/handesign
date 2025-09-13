@@ -1,0 +1,35 @@
+@layer base {
+  :root { color-scheme: dark; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; font-family: theme('fontFamily.sans');
+    background: theme('colors.bg'); color: theme('colors.fg');
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  a { text-decoration: none; color: inherit; }
+}
+
+/* Type scale using clamp for fluid responsiveness */
+:root {
+  --step--1: clamp(0.82rem, 0.77rem + 0.25vw, 0.95rem);
+  --step-0: clamp(1.00rem, 0.93rem + 0.35vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.55vw, 1.50rem);
+  --step-2: clamp(1.56rem, 1.40rem + 0.80vw, 1.88rem);
+  --step-3: clamp(1.95rem, 1.76rem + 1.10vw, 2.35rem);
+  --step-4: clamp(2.44rem, 2.20rem + 1.50vw, 3.00rem);
+}
+
+.h1 { font-size: var(--step-4); line-height: 1.05; }
+.h2 { font-size: var(--step-3); line-height: 1.1; }
+.p  { font-size: var(--step-0); line-height: 1.7; color: theme('colors.mute'); }
+
+/* Link underline animation */
+.link-underline { position: relative; }
+.link-underline::after {
+  content: ''; position: absolute; left: 0; bottom: -2px; height: 1px; width: 100%;
+  background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform 300ms ease;
+}
+.link-underline:hover::after { transform: scaleX(1); }
+
+.nowrap { white-space: nowrap; }

@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "buildCommand": "astro build",
+  "outputDirectory": "dist",
+  "framework": "astro"
+}

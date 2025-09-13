@@ -1,0 +1,18 @@
+---
+const lines: string[] = Astro.props.lines ?? [
+  'Make it fast.',
+  'Make it beautiful.',
+  'Make it consistent.',
+  'Make it carefully.',
+  'Make it timeless.',
+  'Make it soulful.',
+  'Make it.'
+];
+---
+<section class="py-12 sm:py-16">
+  <ul class="space-y-2 sm:space-y-3">
+    {lines.map((t) => (
+      <li class="text-left h2 leading-tight tracking-tight">{t}</li>
+    ))}
+  </ul>
+</section>
