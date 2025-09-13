@@ -1,23 +1,21 @@
 {
-  "name": "han-portfolio",
+  "name": "han-astro-portfolio",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "format": "prettier --write ."
   },
-  "dependencies": {
-    "astro": "^4.15.0",
-    "@astrojs/tailwind": "^5.1.0",
-    "@astrojs/mdx": "^3.1.0",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "astro": "^4.10.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "tailwindcss": "^3.4.4",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5"
   }
 }

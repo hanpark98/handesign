@@ -1,21 +1,19 @@
-/** @type {import('tailwindcss').Config} */
+/**** Tailwind Config ****/
+/** Scans Astro/JS/TS/MD/MDX for classes **/
 export default {
-  content: [
-    './src/**/*.{astro,html,md,mdx,ts,tsx}',
-  ],
+  content: ['./src/**/*.{astro,html,js,jsx,ts,tsx,vue,svelte,md,mdx}'],
   theme: {
-    container: { center: true, padding: '16px' },
     extend: {
-      fontFamily: {
-        sans: ['"Noto Sans KR"', 'ui-sans-serif', 'system-ui', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
-      },
       colors: {
         bg: '#0a0a0a',
-        fg: '#f5f5f5',
-        mute: '#9ca3af'
-      }
-    }
+        text: '#ececec',
+        soft: '#bdbdbd',
+        card: '#111111',
+      },
+      borderRadius: { '2xl': '1.25rem' },
+      boxShadow: { soft: '0 10px 30px rgba(0,0,0,.45)' },
+      maxWidth: { 'wrap': '1128px' },
+    },
   },
-  plugins: []
-};
+  plugins: [],
+}

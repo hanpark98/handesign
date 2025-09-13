@@ -1,35 +1,176 @@
-@layer base {
-  :root { color-scheme: dark; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; font-family: theme('fontFamily.sans');
-    background: theme('colors.bg'); color: theme('colors.fg');
-    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --bg:#0a0a0a;--muted:#121212;--card:#111;--text:#ececec;--soft:#bdbdbd;
+  --radius:22px;--shadow:0 10px 30px rgba(0,0,0,.45);
+
+  /* 마키 속도 조절(원하면 바꿔도 됨) */
+  --mar-dur: 18s;
+}
+
+/* ── Marquee keyframes: 트랙을 절반(-50%)만큼 이동 ───────────────── */
+@keyframes mar-scroll {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(calc(-100% / var(--mar-steps)), 0, 0); }
+}
+
+/* 가장자리 페이드(옵션) */
+.mar-mask{
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+}
+
+/* ── 기본 ─────────────────────────────────────────────────── */
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+a{color:var(--text);text-decoration:none}
+
+/* ---------------- wrap ---------------- */
+.wrap{
+  /* 기본(모바일) */
+  --wrap-max: 1128px;   /* 최대폭 */
+  --wrap-x: 20px;       /* 좌우 여백 */
+  max-width: var(--wrap-max);
+  margin: 0 auto;
+  padding-left: var(--wrap-x);
+  padding-right: var(--wrap-x);
+}
+
+/* PC: 전체폭 + 섹션별 여백(Featured Projects 제외 2배) */
+@media (min-width:1025px){
+  .wrap{ --wrap-max: 98vw; }
+
+  :root{
+    --x-nav: 48px;       /* 24px → 2배 */
+    --x-hero: 64px;      /* 32px → 2배 */
+    --x-marquee: 0px;    /* 마키는 꽉 차게 */
+    --mar-gap: 200px; /* ← 아이템 사이 간격. 48/64/80 등 마음대로 */
+      --mar-dur: 40s;     /* 속도: 원하면 12s, 20s 등으로 조절 */
+  --mar-steps: 3;     /* ⭐ 세트 개수: 지금은 3 */
+    --x-projects: 24px;  /* ★ 유지 */
+    --x-about: 96px;     /* 48px → 2배 */
+    --x-contact: 48px;   /* 24px → 2배 */
+    --x-footer: 48px;    /* 24px → 2배 */
+    
   }
-  a { text-decoration: none; color: inherit; }
+
+  .nav .wrap{ --wrap-x: var(--x-nav); }
+  .hero > .wrap{ --wrap-x: var(--x-hero); }
+  #marquee > .wrap{ --wrap-x: var(--x-marquee); }
+  #projects.wrap{ --wrap-x: var(--x-projects); }
+  #about.wrap{ --wrap-x: var(--x-about); }
+  #contact.wrap{ --wrap-x: var(--x-contact); }
+  footer .wrap{ --wrap-x: var(--x-footer); }
 }
 
-/* Type scale using clamp for fluid responsiveness */
-:root {
-  --step--1: clamp(0.82rem, 0.77rem + 0.25vw, 0.95rem);
-  --step-0: clamp(1.00rem, 0.93rem + 0.35vw, 1.125rem);
-  --step-1: clamp(1.25rem, 1.15rem + 0.55vw, 1.50rem);
-  --step-2: clamp(1.56rem, 1.40rem + 0.80vw, 1.88rem);
-  --step-3: clamp(1.95rem, 1.76rem + 1.10vw, 2.35rem);
-  --step-4: clamp(2.44rem, 2.20rem + 1.50vw, 3.00rem);
+/* ---------------- nav ---------------- */
+.nav{position:sticky;top:0;z-index:40;backdrop-filter:saturate(180%) blur(8px);background:rgba(10,10,10,.6);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav .row{display:flex;align-items:center;justify-content:space-between;height:64px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:#151515;border:1px solid #1f1f1f}
+.btn:hover{border-color:#2a2a2a;transform:translateY(-1px)}
+
+.hero{position:relative;isolation:isolate}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.1) contrast(1.05) brightness(.75)}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(70% 100% at 70% 0%,rgba(10,10,10,.0),rgba(10,10,10,.85) 70%),linear-gradient(0deg,rgba(10,10,10,.7),rgba(10,10,10,.7));z-index:0}
+.hero>.wrap{position:relative;z-index:1;padding:120px 20px 80px}
+
+.badge{display:inline-block;font-size:12px;letter-spacing:.2px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+
+.card{background:var(--card);border:1px solid #1b1b1b;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.card-media{aspect-ratio:16/9;background:#0f0f0f;display:grid;place-items:center}
+.card-media img,.card-media video{width:100%;height:100%;object-fit:cover;display:block}
+
+.pane{background:var(--muted);border:1px solid #1b1b1b;border-radius:var(--radius);padding:22px}
+
+.foot{padding:48px 0 90px;border-top:1px solid rgba(255,255,255,.06);color:#b9b9b9}
+
+/* ===================== Featured Projects ===================== */
+.hwrap{ position: relative; }
+.hbtn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:40px; height:40px; display:grid; place-items:center;
+  border-radius:999px; background:rgba(20,20,20,.85);
+  border:1px solid #2a2a2a; color:#ddd; cursor:pointer;
+  box-shadow: var(--shadow);
+  transition: opacity .2s ease, transform .2s ease;
+  opacity:0;
+}
+.hbtn svg{ width:18px; height:18px }
+.hbtn.prev{ left:-6px }
+.hbtn.next{ right:-6px }
+.hwrap:hover .hbtn{ opacity:1 }
+.hbtn.disabled{ opacity:.25; pointer-events:none }
+
+.fproj{
+  width:100%;
+  display:flex; flex-wrap:nowrap; gap:24px;
+  overflow-x:auto; overflow-y:hidden;
+  padding:8px 4px 16px;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+.fproj.dragging{ cursor:grabbing }
+
+.fcard{
+  scroll-snap-align:start;
+  flex:0 0 auto;
+  background:var(--card);
+  border:1px solid #1b1b1b;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
 }
 
-.h1 { font-size: var(--step-4); line-height: 1.05; }
-.h2 { font-size: var(--step-3); line-height: 1.1; }
-.p  { font-size: var(--step-0); line-height: 1.7; color: theme('colors.mute'); }
-
-/* Link underline animation */
-.link-underline { position: relative; }
-.link-underline::after {
-  content: ''; position: absolute; left: 0; bottom: -2px; height: 1px; width: 100%;
-  background: currentColor; transform: scaleX(0); transform-origin: left;
-  transition: transform 300ms ease;
+@media (min-width:1025px){
+  .fcard{ width:1080px; }
+  .fcard .card-media{ aspect-ratio:16/9; }
 }
-.link-underline:hover::after { transform: scaleX(1); }
+@media (max-width:1024px){
+  .hbtn{ display:none }
+  .fproj{ display:block; overflow-x:visible; cursor:auto; user-select:auto; touch-action:auto; }
+  .fcard{ width:100%; margin-bottom:18px }
+}
 
-.nowrap { white-space: nowrap; }
+.fproj::-webkit-scrollbar{ height:8px }
+.fproj::-webkit-scrollbar-thumb{ background:#2a2a2a; border-radius:999px }
+.fproj::-webkit-scrollbar-track{ background:transparent }
+
+.card-body{padding:16px 16px 18px}
+.card-title{margin:0 0 6px;font-size:18px;font-weight:700}
+.card-desc{color:var(--soft);font-size:14px}
+.tag{display:inline-flex;align-items:center;padding:1.5px 6px;border:1.5px solid #a9a9a9;border-radius:10px;font-size:12px;color:#FFFFFF; margin: 0px 10px 5px 0px;}
+
+/* ── Marquee 레이아웃(무결점) ───────────────────────────────── */
+.marquee{ border-block:1px solid rgba(255,255,255,.06); background:#0d0d0d; }
+.marquee .wrap{ overflow:hidden }
+
+/* 가시영역 */
+.mar-view{ overflow:hidden; }
+
+/* 트랙(두 그룹 사이에도 동일 간격) */
+.mar-track{
+  display:flex;
+  gap:0; /* ★ 경계 끊김 방지 */
+  width:max-content;
+  will-change: transform;
+  animation: mar-scroll var(--mar-dur) linear infinite;
+}
+
+/* 그룹 내부 아이템들 간 간격 */
+.mar-group{
+  display:flex;
+  gap: var(--mar-gap);              /* ← 아이템 사이 간격도 동일 */
+  flex:0 0 auto;
+}
+
+/* 아이템 상자: 텍스트에 딱 맞는 너비 + 줄바꿈 금지 */
+.marquee__item{
+  display:inline-flex;
+  align-items:center;
+  white-space:nowrap;               /* 줄바꿈 방지 */
+  padding:0 .25rem;                 /* 텍스트 좌우 여백(옵션) */
+}

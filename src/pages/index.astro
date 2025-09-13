@@ -1,26 +1,188 @@
 ---
-import Base from '@/layouts/Base.astro';
-import LoopMantra from '@/components/LoopMantra.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
-import Grid from '@/components/Grid.astro';
-
-const projects = [
-  { href: '/projects/example', title: 'Example Case Study', year: '2025', thumb: '/og-default.jpg', tags: ['UI', 'Brand'] },
-  { href: '/projects/another', title: 'Another Project', year: '2024', thumb: '/og-default.jpg' },
-];
+import '../styles/global.css';
+const year = new Date().getFullYear();
 ---
-<Base title="Han Park — Designer">
-  <section class="pt-16 sm:pt-24">
-    <h1 class="h1 max-w-[18ch] font-extrabold tracking-tight">
-      Han Park <span class="p block font-normal">is a designer & creative technologist based in Seoul.</span>
-    </h1>
-  </section>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Han Park - Graphic Designer</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" />
+  </head>
+  <body>
+    <div class="nav">
+      <div class="wrap row">
+        <a class="logo" href="#top" style="font-weight:800;letter-spacing:.4px">HAN PARK</a>
+        <nav class="links" style="display:flex;gap:18px">
+          <a href="#projects" class="btn">Projects</a>
+          <a href="#about" class="btn">About</a>
+          <a href="#contact" class="btn">Contact</a>
+        </nav>
+      </div>
+    </div>
 
-  <LoopMantra />
+    <section id="top" class="hero" aria-label="Hero">
+      <video autoplay muted loop playsinline poster="/assets/hero-poster.jpg"></video>
+      <div class="wrap">
+        <span class="badge">Portfolio</span>
+        <h1 style="font-size:56px;line-height:1.05;margin:16px 0 10px;font-weight:800">Graphic Designer</h1>
+        <p style="color:#bdbdbd;max-width:720px">Clean, responsive portfolio starter with video hero, marquee, project grid, and an about/links panel.</p>
+        <div style="display:flex;gap:12px;margin-top:22px">
+          <a class="btn" href="#projects">See work</a>
+          <a class="btn" href="#contact">Contact</a>
+        </div>
+      </div>
+    </section>
 
-  <section class="py-10 sm:py-16">
-    <Grid>
-      {projects.map((p) => <ProjectCard {...p} />)}
-    </Grid>
-  </section>
-</Base>
+    <!-- Marquee (끊김 없이 무한 반복) -->
+    <section id="marquee" class="marquee">
+      <div class="wrap mar-mask">
+        <div class="mar-view">
+          <div class="mar-track">
+            <!-- 그룹 A -->
+            <div class="mar-group" aria-hidden="false">
+              <div class="marquee__item">Brand Design</div>
+              <div class="marquee__item">E-commerce Marketing</div>
+              <div class="marquee__item">Social Media Marketing</div>
+              <div class="marquee__item">Motion Graphics</div>
+              <div class="marquee__item">Typography</div>
+              <div class="marquee__item"></div>
+            </div>
+            <!-- 그룹 B (복제본) -->
+            <div class="mar-group" aria-hidden="true">
+              <div class="marquee__item">Brand Design</div>
+              <div class="marquee__item">E-commerce Marketing</div>
+              <div class="marquee__item">Social Media Marketing</div>
+              <div class="marquee__item">Motion Graphics</div>
+              <div class="marquee__item">Typography</div>
+              <div class="marquee__item"></div>
+            </div>
+
+            <!-- 그룹 C (복제본) -->
+              <div class="mar-group" aria-hidden="true">
+              <div class="marquee__item">Brand Design</div>
+              <div class="marquee__item">E-commerce Marketing</div>
+              <div class="marquee__item">Social Media Marketing</div>
+              <div class="marquee__item">Motion Graphics</div>
+              <div class="marquee__item">Typography</div>
+              <div class="marquee__item"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section id="projects" class="wrap" style="padding:80px 0">
+      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— Featured Projects</h2>
+
+      <div class="hwrap">
+        <div class="fproj" id="fproj"
+          onwheel="
+            if (this.matches(':hover')) {
+              if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+                event.preventDefault();
+                this.scrollBy({ left: event.deltaY, behavior: 'auto' });
+              }
+            }"
+          role="region" aria-label="Featured projects scroller">
+
+          <article class="fcard">
+            <div class="card-media"><img src="/assets/p1.jpg" alt="Project 1" loading="lazy" /></div>
+            <div class="card-body">
+              <div class="tag">Packaging</div><div class="tag">Brand</div>
+              <h3 class="card-title">Dorm Beauty Essentials</h3>
+              <p class="card-desc">Curated skincare box with bold typography system and playful motion cues.</p>
+            </div>
+          </article>
+
+          <article class="fcard">
+            <div class="card-media"><img src="/assets/p2.jpg" alt="Project 2" loading="lazy" /></div>
+            <div class="card-body">
+               <div class="tag">Web</div><div class="tag">Astro</div>
+              <h3 class="card-title">Interactive Product Grid</h3>
+              <p class="card-desc">Responsive, fast-loading e-commerce UI with custom cards and media.</p>
+            </div>
+          </article>
+
+          <article class="fcard">
+            <div class="card-media"><img src="/assets/p3.jpg" alt="Project 3" loading="lazy" /></div>
+            <div class="card-body">
+            
+              <div class="tag">Identity</div>
+              <h3 class="card-title">Identity: 한결</h3>
+              <p class="card-desc">Minimal identity & system spec — spacing, optical sizes, grids, and motion.</p>
+            </div>
+          </article>
+
+          <article class="fcard">
+            <div class="card-media"><img src="/assets/p4.jpg" alt="Project 4" loading="lazy" /></div>
+            <div class="card-body">
+              
+              <div class="tag">Web</div><div class="tag">Motion</div>
+              <h3 class="card-title">Launch Microsite</h3>
+              <p class="card-desc">One-pager with hero video, marquee, grid, and accessible interactions.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="wrap" style="padding:80px 0">
+      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— About</h2>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:22px">
+        <div class="pane">
+          <h3 class="card-title">Han Park</h3>
+          <p>Graphic designer focused on packaging, brand systems, and fast, elegant web experiences. Currently exploring Astro + Tailwind for personal publishing and portfolios.</p>
+          <ul style="margin:0;padding:0;list-style:none;display:grid;gap:10px">
+            <li>• Based in Seoul (KST)</li>
+            <li>• Available for freelance from Q3 2025</li>
+            <li>• Tooling: Figma, Illustrator, Photoshop, VS Code</li>
+          </ul>
+        </div>
+        <div class="pane">
+          <h3 class="card-title">Socials</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:grid;gap:10px">
+            <li><a href="#" target="_blank">Instagram</a></li>
+            <li><a href="#" target="_blank">GitHub</a></li>
+            <li><a href="mailto:hello@example.com" target="_blank">Email</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="wrap" style="padding:80px 0">
+      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— AWARDS</h2>
+      <div class="pane">
+        <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
+        <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
+        <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
+        <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
+        <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
+        <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
+      </div>
+    </section>
+
+
+    <section id="contact" class="wrap" style="padding:80px 0">
+      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— Contact</h2>
+      <div class="pane">
+        <p>For collaborations and commissions, send a note to <a href="mailto:hello@example.com">hello@example.com</a>. I aim to respond within 2–3 days.</p>
+        <div style="display:flex;gap:12px;margin-top:6px">
+          <a class="btn" href="mailto:hello@example.com">Email</a>
+          <a class="btn" href="#top">Back to top</a>
+        </div>
+      </div>
+    </section>
+
+
+
+    <footer class="foot">
+      <div class="wrap" style="display:grid;grid-template-columns:1fr auto;gap:24px">
+        <div>© {year} Han Park. Built with Astro.</div>
+        <div>v1.0 • <a href="#top">Top</a></div>
+      </div>
+    </footer>
+  </body>
+</html>
