@@ -6,14 +6,16 @@ const year = new Date().getFullYear();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Han Park - Graphic Designer</title>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" as="style" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" />
+    <title>Han Park - Graphic Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
   </head>
   <body>
     <div class="nav">
       <div class="wrap row">
-        <a class="logo" href="#top" style="font-weight:800;letter-spacing:.4px">HAN PARK</a>
+        <a class="logo" href="#top" style="font-weight:800;">HAN PARK</a>
         <nav class="links" style="display:flex;gap:18px">
           <a href="#projects" class="btn">Projects</a>
           <a href="#about" class="btn">About</a>
@@ -26,11 +28,10 @@ const year = new Date().getFullYear();
       <video autoplay muted loop playsinline poster="/assets/hero-poster.jpg"></video>
       <div class="wrap">
         <span class="badge">Portfolio</span>
-        <h1 style="font-size:56px;line-height:1.05;margin:16px 0 10px;font-weight:800">Graphic Designer</h1>
-        <p style="color:#bdbdbd;max-width:720px">Clean, responsive portfolio starter with video hero, marquee, project grid, and an about/links panel.</p>
+        <h1 style="font-size:5rem;line-height:1.05; margin:5px 0 5px;font-weight:600; letter-spacing: -0.15rem;">Han Park</h1>
+        <h1 style="font-size:2.5rem;line-height:1.05; margin: 0px 0 10px;font-weight:500; letter-spacing: -0.1rem;">Graphic Designer</h1>
+        <p style="color: var(--olive); max-width:720px">Clean, responsive portfolio starter with video hero, marquee, project grid, and an about/links panel.</p>
         <div style="display:flex;gap:12px;margin-top:22px">
-          <a class="btn" href="#projects">See work</a>
-          <a class="btn" href="#contact">Contact</a>
         </div>
       </div>
     </section>
@@ -75,19 +76,76 @@ const year = new Date().getFullYear();
 
     <!-- Featured Projects -->
     <section id="projects" class="wrap" style="padding:80px 0">
-      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— Featured Projects</h2>
+      <h2>— FEATURED PROJECTS</h2>
 
       <div class="hwrap">
         <div class="fproj" id="fproj"
-          onwheel="
-            if (this.matches(':hover')) {
-              if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-                event.preventDefault();
-                this.scrollBy({ left: event.deltaY, behavior: 'auto' });
-              }
-            }"
-          role="region" aria-label="Featured projects scroller">
+  onwheel="
+    if (window.innerWidth <= 1024 || !this.matches(':hover')) return;
 
+    const el = this;
+
+    /* ── 1) 휠 입력 정규화: deltaMode(라인/픽셀) 보정 ── */
+    const unit = (event.deltaMode === 1) ? 16 : (event.deltaMode === 2) ? window.innerHeight : 1;
+    const dX = event.deltaX * unit;
+    const dY = event.deltaY * unit;
+
+    /* ── 2) 전환 민감도: ay >= ax * THETA 로 느슨화 ── */
+    const ax = Math.abs(dX), ay = Math.abs(dY);
+    const THETA = 0.1;                     /* ↓ 값이 작을수록 전환 더 민감 */
+    if (ay < ax * THETA) return;           /* 가로 의도가 크면 개입 X */
+
+    /* ── 3) 끝 판정 오차 축소 + 방향/여유 판단 ── */
+    const tol = 1;                          /* (기존 8→6) 더 민감하게 */
+    const dir = dY;                         /* +오른쪽 / -왼쪽 */
+    const max = el.scrollWidth - el.clientWidth;
+    const left = el.scrollLeft;
+    const canRight = dir > 0 && left < (max - tol);
+    const canLeft  = dir < 0 && left > tol;
+
+    /* 양끝이면 통과 → 페이지 세로 스크롤로 */
+    if (!(canLeft || canRight)) return;
+
+    /* ── 4) 가로 스크롤 흡수 + 관성(모멘텀) ── */
+    event.preventDefault();
+
+    /* 아주 작은 입력도 반응(미세 가속 보정) */
+    const gain = 0.40;                      /* ↑ 가속도: 0.35→0.50로 상향 */
+    const nudge = ay < 2 ? 2 * Math.sign(dir || 1) : 0;  /* 미세 입력 보강 */
+    const impulse = dir * gain + nudge;
+
+    if (!el._mom) {
+      el._mom = { v: 0, raf: 0 };
+      const step = () => {
+        if (!el._mom) return;
+        const max = el.scrollWidth - el.clientWidth;
+        let next = el.scrollLeft + el._mom.v;
+
+        if (next <= 0) { next = 0; if (el._mom.v < 0) el._mom.v = 0; }
+        if (next >= max) { next = max; if (el._mom.v > 0) el._mom.v = 0; }
+
+        el.scrollLeft = next;
+
+        /* 마찰(감쇠) – 살짝 완화해서 더 민감하게 유지 */
+        el._mom.v *= 0.8;                  /* (기존 0.92→0.93) */
+
+        if (Math.abs(el._mom.v) < 0.18) { cancelAnimationFrame(el._mom.raf); el._mom = null; return; }
+        el._mom.raf = requestAnimationFrame(step);
+      };
+      el._mom.raf = requestAnimationFrame(step);
+    }
+    el._mom.v += impulse;
+
+    /* ── 5) 중앙 정렬: 실제 흡수됐을 때만 1회(쿨다운) ── */
+    const now = Date.now();
+    if (!el._centerUntil || now > el._centerUntil) {
+      const r = el.getBoundingClientRect();
+      const targetY = window.scrollY + r.top + (r.height/2) - (window.innerHeight/2);
+      window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+      el._centerUntil = now + 700;
+    }
+  "
+  role="region" aria-label="Featured projects scroller">
           <article class="fcard">
             <div class="card-media"><img src="/assets/p1.jpg" alt="Project 1" loading="lazy" /></div>
             <div class="card-body">
@@ -130,7 +188,7 @@ const year = new Date().getFullYear();
     </section>
 
     <section id="about" class="wrap" style="padding:80px 0">
-      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— About</h2>
+      <h2>— ABOUT</h2>
       <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:22px">
         <div class="pane">
           <h3 class="card-title">Han Park</h3>
@@ -153,7 +211,7 @@ const year = new Date().getFullYear();
     </section>
 
     <section id="contact" class="wrap" style="padding:80px 0">
-      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— AWARDS</h2>
+      <h2>— AWARDS</h2>
       <div class="pane">
         <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
         <p><a href="mailto:hello@example.com">2024 Red Dot Award - Communication Design</a> </p>
@@ -166,7 +224,7 @@ const year = new Date().getFullYear();
 
 
     <section id="contact" class="wrap" style="padding:80px 0">
-      <h2 style="display:flex;gap:12px;margin:0 0 20px;font-size:13px;color:#bdbdbd;text-transform:uppercase;letter-spacing:.18em">— Contact</h2>
+      <h2>— CONTACTS</h2>
       <div class="pane">
         <p>For collaborations and commissions, send a note to <a href="mailto:hello@example.com">hello@example.com</a>. I aim to respond within 2–3 days.</p>
         <div style="display:flex;gap:12px;margin-top:6px">
@@ -183,6 +241,8 @@ const year = new Date().getFullYear();
         <div>© {year} Han Park. Built with Astro.</div>
         <div>v1.0 • <a href="#top">Top</a></div>
       </div>
+      
     </footer>
+    
   </body>
 </html>
